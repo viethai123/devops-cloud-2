@@ -151,61 +151,6 @@ Resources:
     UpdatePolicy:
       AutoScalingReplacingUpdate:
         WillReplace: True
-  
-  #ScalingUp
-  WebAppScaleUpPolicy:
-    Type: AWS::AutoScaling::ScalingPolicy
-    Properties:
-      AdjustmentType: ChangeInCapacity
-      AutoScalingGroupName: !Ref WebAppAutoScalingGroup
-      Cooldown: 300
-      ScalingAdjustment: 1
-
-  #ScalingDown
-  WebAppScaleDownPolicy:
-    Type: AWS::AutoScaling::ScalingPolicy
-    Properties:
-      AdjustmentType: ChangeInCapacity
-      AutoScalingGroupName: !Ref WebAppAutoScalingGroup
-      Cooldown: 300
-      ScalingAdjustment: -1
-
-  #CloudWatch alerts
-  CPUAlarmHigh:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmName: "CpuHigh"
-      AlarmDescription: Scale-up if CPU usage is > 80% for 5 minutes
-      MetricName: CPUUtilization
-      Namespace: AWS/EC2
-      Statistic: Average
-      Period: 300
-      EvaluationPeriods: 2
-      Threshold: 80
-      ComparisonOperator: GreaterThanThreshold
-      AlarmActions:
-      - !Ref WebAppScaleUpPolicy
-      Dimensions:
-      - Name: AutoScalingGroupName
-        Value: !Ref WebAppAutoScalingGroup
-
-  #CloudWatch alerts
-  CPUAlarmLow:
-    Type: AWS::CloudWatch::Alarm
-    Properties:
-      AlarmDescription: Scale-down if CPU usage is < 60% for 5 minutes
-      MetricName: CPUUtilization
-      Namespace: AWS/EC2
-      Statistic: Average
-      Period: 300
-      EvaluationPeriods: 2
-      Threshold: 60
-      ComparisonOperator: LessThanThreshold
-      AlarmActions:
-      - !Ref WebAppScaleDownPolicy
-      Dimensions:
-      - Name: AutoScalingGroupName
-        Value: !Ref WebAppAutoScalingGroup
 
   S3ReadOnlyEC2s:
     Type: AWS::IAM::Role
